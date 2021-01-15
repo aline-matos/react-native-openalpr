@@ -47,17 +47,17 @@ public class ALPR {
         mHandler = new Handler(handlerThread.getLooper()) {
             @Override
             public void handleMessage(Message msg) {
-                Log.i(TAG, "handleMessage");
                 HashMap<String, Object> data = (HashMap<String, Object>) msg.obj;
                 if ((Boolean) data.get("finish")) {
                     // finishAlpr();
                 } else {
                     executeRecognition(
-                            (Mat) data.get("m"),
-                            (String) data.get("country"),
-                            (ResultsCallback) data.get("callback"),
-                            (WeakReference<Context>) data.get("context"),
-                            (int) data.get("rotation")
+                        (Mat) data.get("m"),
+                        (String) data.get("country"),
+                        (String) data.get("region"),
+                        (ResultsCallback) data.get("callback"),
+                        (WeakReference<Context>) data.get("context"),
+                        (int) data.get("rotation")
                     );
                 }
 
@@ -84,8 +84,7 @@ public class ALPR {
     /**
      * prepare data and recognize the license plate
      */
-    private void executeRecognition(final Mat m, final String country, final ResultsCallback callback, final WeakReference<Context> context, int rotation) {
-        Log.i(TAG, "executeRecognition");
+    private void executeRecognition(final Mat m, final String country, final String region, final ResultsCallback callback, final WeakReference<Context> context, int rotation) {
         Context ctx = context.get();
         if (ctx == null) {
             finishExecution(ctx, callback);
@@ -102,7 +101,7 @@ public class ALPR {
         // path to openalpr config file in android environment
         final String androidDataDir = ctx.getApplicationInfo().dataDir;
         final String openAlprConfFile = androidDataDir + File.separatorChar + "runtime_data" + File.separatorChar + "openalpr.conf";
-
+        
         // create file in internal memory for passing to openalpr
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 10;
@@ -116,7 +115,7 @@ public class ALPR {
         }
 
         // synchronous call for license plate recognition to openalpr
-        String result = OpenALPR.Factory.create(ctx, androidDataDir).recognizeWithCountryRegionNConfig(country, "", file.getAbsolutePath(), openAlprConfFile, 10);
+        String result = OpenALPR.Factory.create(ctx, androidDataDir).recognizeWithCountryRegionNConfig(country, region, file.getAbsolutePath(), openAlprConfFile, 10);
 
         // deliver results to main thread
         Handler handler = new Handler(ctx.getMainLooper());
@@ -141,7 +140,7 @@ public class ALPR {
             });
 
         } catch (JsonSyntaxException e) {
-            Log.e(TAG, "AlprException", e);
+            Log.e(TAG, "ALPR executeRecognition Exception", e);
             finishExecution(ctx, callback);
         }
     }
@@ -242,11 +241,13 @@ public class ALPR {
             fos = new FileOutputStream(mypath);
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
         } catch (Exception e) {
+            Log.e(TAG, "ALPR saveToInternalStorage Exception", e);
             e.printStackTrace();
         } finally {
             try {
                 fos.close();
             } catch (IOException e) {
+                Log.e(TAG, "ALPR saveToInternalStorage IOException", e);
                 e.printStackTrace();
             }
         }
