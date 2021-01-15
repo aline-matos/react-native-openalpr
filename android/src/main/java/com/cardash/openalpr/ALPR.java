@@ -115,6 +115,7 @@ public class ALPR {
         }
 
         // synchronous call for license plate recognition to openalpr
+        Log.i(TAG, "ALPR country/region: "+country+"/"+region);
         String result = OpenALPR.Factory.create(ctx, androidDataDir).recognizeWithCountryRegionNConfig(country, region, file.getAbsolutePath(), openAlprConfFile, 10);
 
         // deliver results to main thread
@@ -186,12 +187,13 @@ public class ALPR {
     /**
      * entry point for frame processing request
      */
-    void process(final Mat m, final String country, int rotation, final ResultsCallback callback, final WeakReference<Context> context) {
+    void process(final Mat m, final String country, final String region, int rotation, final ResultsCallback callback, final WeakReference<Context> context) {
         // post message to separate thread with image and related data
         if (!mHandler.hasMessages(10) && isProcessing.compareAndSet(false, true)) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("m", m.clone());
             map.put("country", country);
+            map.put("region", region);
             map.put("callback", callback);
             map.put("context", context);
             map.put("rotation", rotation);

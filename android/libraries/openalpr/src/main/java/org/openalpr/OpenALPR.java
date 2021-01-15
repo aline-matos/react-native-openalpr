@@ -1,6 +1,7 @@
 package org.openalpr;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.openalpr.util.Utils;
 
@@ -78,10 +79,12 @@ public interface OpenALPR {
         public synchronized static OpenALPR create(Context context, String androidDataDir) {
             if (instance == null) {
                 instance = new AlprJNIWrapper();
-
-                Utils.copyAssetFolder(context.getAssets(), "runtime_data", androidDataDir + File.separatorChar + "runtime_data");
+                try {
+                    Utils.copyAssetFolder(context.getAssets(), "runtime_data", androidDataDir + File.separatorChar + "runtime_data");
+                } catch (Exception e) {
+                    Log.e("OpenALPR", "ALPR create Exception", e);
+                }   
             }
-
             return instance;
         }
     }

@@ -16,7 +16,7 @@ class Camera extends Component {
     this.props.onPlateRecognized(nativeEvent)
 
   render() {
-    console.log('Fork camera running...');
+    console.log('Fork camera running...', this.props);
     return (
       <ALPRCamera {...this.props} onPlateRecognized={this.onPlateRecognized} />
     )

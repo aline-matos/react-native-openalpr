@@ -1,6 +1,7 @@
 package org.openalpr.util;
 
 import android.content.res.AssetManager;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,9 +40,9 @@ public class Utils {
                 } else {
                     res &= copyAssetFolder(assetManager, fromAssetPath + "/" + file, toPath + "/" + file);
                 }
-
             return res;
         } catch (Exception e) {
+            Log.e("Utils", "ALPR copyAssetFolder Exception", e);
             e.printStackTrace();
 
             return false;
@@ -80,6 +81,7 @@ public class Utils {
 
             return true;
         } catch (Exception e) {
+            Log.e("Utils", "ALPR copyAsset Exception", e);
             e.printStackTrace();
             return false;
         }
