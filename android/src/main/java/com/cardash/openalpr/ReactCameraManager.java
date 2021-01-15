@@ -93,6 +93,12 @@ public class ReactCameraManager extends SimpleViewManager<FrameLayout> implement
         camera.setCountry(country);
     }
 
+    @ReactProp(name = "region")
+    public void setRegion(FrameLayout view, @Nullable String region) {
+        ICameraView camera = (ICameraView) view.findViewById(R.id.camera_view);
+        camera.setRegion(region);
+    }
+
     @ReactProp(name = "captureQuality")
     public void setCaptureQuality(FrameLayout view, @Nullable int captureQuality) {
         ICameraView camera = (ICameraView) view.findViewById(R.id.camera_view);

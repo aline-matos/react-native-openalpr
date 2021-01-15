@@ -5,6 +5,8 @@ public interface ICameraView {
 
     void setCountry(String country);
 
+    void setRegion(String region);
+
     void setQuality(int quality);
 
     void setAspect(int aspect);

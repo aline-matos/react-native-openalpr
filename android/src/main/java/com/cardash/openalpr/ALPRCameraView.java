@@ -41,6 +41,7 @@ public class ALPRCameraView extends JavaCameraView implements ICameraView {
     private int[] plateBorderRgb = new int[]{0, 0, 255};
     private boolean plateBorderEnabled;
     private String country = "us";
+    private String region = "";
     private boolean tapToFocusEnabled;
     private boolean torchEnabled = false;
     private int rotation;
@@ -79,7 +80,7 @@ public class ALPRCameraView extends JavaCameraView implements ICameraView {
                 Mat rgba = inputFrame.rgba();
 
                 if (callback != null) {
-                    ALPR.getInstance().process(rgba, country, rotation, new ALPR.ResultsCallback() {
+                    ALPR.getInstance().process(rgba, country, region, rotation, new ALPR.ResultsCallback() {
                         @Override
                         public void onResults(String plate, String confidence, String processingTimeMs, List<android.graphics.Point> coordinates) {
                             if (getContext() == null) return;
@@ -314,6 +315,11 @@ public class ALPRCameraView extends JavaCameraView implements ICameraView {
     @Override
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    @Override
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     @Override
